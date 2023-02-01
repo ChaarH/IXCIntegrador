@@ -1,6 +1,6 @@
 <?php
 
-namespace IXCsoft;
+namespace App\Service;
 
 class WebserviceClientException extends \Exception
 {

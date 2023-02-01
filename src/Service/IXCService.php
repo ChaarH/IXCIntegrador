@@ -1,9 +1,10 @@
 <?php
 
-require_once './vendor/autoload.php';
-// require_once __DIR__ . '/vendor/autoload.php';
+namespace App\Service;
 
 use Symfony\Component\Dotenv\Dotenv;
+use App\Service\WebserviceClient;
+
 
 class IXCService
 {
@@ -19,6 +20,26 @@ class IXCService
         $this->apiToken = $_ENV['IXC_TOKEN'];
     }
 
+    public function connect()
+    {
+
+        $host = $this->apiURL;
+        $token = $this->apiToken;
+        $selfSigned = true;
+
+        $api = new WebserviceClient($host, $token, $selfSigned);
+
+        return $api;
+    }
+
+    public function get($url, $params, $arrayFormat = false)
+    {
+        $api = $this->connect();
+
+        $api->get($url, $params);
+        return $api->getRespostaConteudo($arrayFormat); // false para json | true para array
+    }
+
     public function data()
     {
         //requerindo arquivo do webservice
@@ -30,7 +51,7 @@ class IXCService
         //true para certificado auto assinado
         $selfSigned = true;
         //instanciando api requerida na primeira linha do código
-        $api = new IXCsoft\WebserviceClient($host, $token, $selfSigned);
+        $api = new WebserviceClient($host, $token, $selfSigned);
         //array de parâmetros do método
         $params = array(
             'id_contrato' => '2806'
@@ -49,7 +70,7 @@ class IXCService
         //token gerado no cadastro do usuario (verificar permissões)
         $token = $this->apiToken; //token gerado no cadastro do usuario (verificar permissões)
         $selfSigned = true; //true para certificado auto assinado
-        $api = new IXCsoft\WebserviceClient($host, $token, $selfSigned);
+        $api = new WebserviceClient($host, $token, $selfSigned);
         $params = array(
             'qtype' => 'cliente_contrato.id', //campo de filtro
             'query' => '1', //valor para consultar
